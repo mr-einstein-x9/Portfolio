@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>_mr_einstein__ | Developer Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/pixel-operator" type="text/css"/>
+<style>
+:root {
+  --bg: #0d0d14; --surface: #13131f; --surface2: #1a1a2e;
+  --accent: #00e5ff; --accent-dim: rgba(0,229,255,0.10);
+  --border: rgba(0,229,255,0.15); --text: #f0f0f0;
+  --muted: rgba(240,240,240,0.55); --green: #00ff88; --purple: #a855f7;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background: var(--bg); color: var(--text); font-family: 'PixelOperatorRegular', monospace; overflow-x: hidden; cursor: none; font-size: 18px; letter-spacing: 0.5px; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+.pixel { font-family: 'PixelOperatorBold', monospace; }
+
+/* Background Canvas */
+#bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+/* Custom Cursor */
+#cursor-dot { position: fixed; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; pointer-events: none; z-index: 100000; top: -3px; left: -3px; }
+#cursor-ring { position: fixed; width: 22px; height: 22px; border: 1.5px solid var(--accent); border-radius: 50%; pointer-events: none; z-index: 99999; top: -11px; left: -11px; transition: width 0.2s, height 0.2s, background 0.2s, transform 0.1s ease-out; }
+#cursor-ring.hover { width: 44px; height: 44px; background: var(--accent-dim); transform: translate(-11px, -11px); }
+
+/* Scroll Progress */
+#scroll-progress { position: fixed; top: 64px; left: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--purple)); z-index: 8999; width: 0%; }
+
+/* Navbar */
+nav { position: fixed; top: 0; width: 100%; height: 64px; background: rgba(13,13,20,0.88); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); z-index: 9000; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; }
+.nav-logo { display: flex; align-items: center; gap: 8px; color: var(--accent); font-size: 11px; text-shadow: 0 0 20px rgba(0,229,255,0.5); }
+.nav-links { display: flex; gap: 32px; font-size: 14px; font-weight: 500; color: var(--muted); align-items: center; }
+.nav-links a, .nav-work { transition: 0.2s; cursor: pointer; }
+.nav-links a:hover, .nav-work:hover { color: var(--text); }
+.btn-nav { border: 1px solid var(--border); padding: 8px 16px; border-radius: 6px; }
+.btn-nav:hover { border-color: var(--accent); background: var(--accent-dim); color: var(--accent); }
+
+/* Mega Dropdown */
+.nav-work { height: 64px; display: flex; align-items: center; }
+.mega-dropdown { position: absolute; top: 64px; left: 0; width: 100vw; background: var(--surface); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); opacity: 0; pointer-events: none; transition: 0.2s; transform: translateY(-10px); }
+.nav-work:hover .mega-dropdown { opacity: 1; pointer-events: auto; transform: translateY(0); }
+.mega-inner { max-width: 1200px; margin: 0 auto; padding: 36px 80px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 48px; }
+.mega-col h4 { font-size: 11px; text-transform: uppercase; color: var(--muted); letter-spacing: 2px; margin-bottom: 20px; }
+.feat-card { border: 1px solid var(--border); border-radius: 12px; padding: 20px; background: var(--surface2); transition: 0.2s; display: block; }
+.feat-card:hover { border-color: rgba(0,229,255,0.4); }
+.pill { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; display: inline-block; margin-bottom: 12px; letter-spacing: 1px; }
+.pill-py { background: rgba(168,85,247,0.15); color: #c084fc; }
+.pill-js { background: rgba(251,191,36,0.15); color: #fbbf24; }
+.pill-feat { background: var(--accent-dim); color: var(--accent); margin-left: 8px; }
+.feat-card h5 { font-size: 18px; margin-bottom: 6px; color: var(--text); }
+.feat-card p { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+.feat-card span { font-size: 13px; color: var(--accent); }
+.proj-list li { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-bottom: 1px solid rgba(0,229,255,0.08); transition: 0.2s; border-radius: 8px; cursor: pointer; }
+.proj-list li:hover { background: var(--accent-dim); }
+.proj-list h6 { font-size: 14px; font-weight: 500; }
+.proj-list p { font-size: 12px; color: var(--muted); }
+.proj-list .arrow { margin-left: auto; opacity: 0; color: var(--accent); transition: 0.2s; }
+.proj-list li:hover .arrow { opacity: 1; transform: translateX(4px); }
+.quick-link { border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px; transition: 0.2s; }
+.quick-link:hover { border-color: rgba(0,229,255,0.4); }
+.quick-link h6 { font-size: 15px; font-weight: 600; }
+.quick-link p { font-size: 12px; color: var(--muted); }
+
+/* Main Sections */
+section { position: relative; z-index: 10; max-width: 1200px; margin: 0 auto; padding: 120px 80px; }
+.animate-up { opacity: 0; transform: translateY(24px); transition: opacity 0.55s ease, transform 0.55s ease; }
+.animate-up.in-view { opacity: 1; transform: translateY(0); }
+
+/* Hero */
+#hero { min-height: 100vh; display: flex; align-items: center; gap: 60px; padding-top: 144px; }
+.hero-left { flex: 0 0 58%; }
+.hero-right { flex: 0 0 42%; position: relative; }
+.status-badge { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; color: var(--green); margin-bottom: 24px; }
+.status-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: 0; } }
+.hero-hello { font-size: 15px; color: var(--muted); margin-bottom: 8px; }
+h1.glitch { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 700; color: var(--accent); margin-bottom: 16px; position: relative; display: inline-block; }
+h1.glitch::before, h1.glitch::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); }
+h1.glitch::before { left: 3px; text-shadow: -2px 0 red; clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%); animation: glitch 5s infinite linear alternate-reverse; }
+h1.glitch::after { left: -3px; text-shadow: -2px 0 cyan; clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%); animation: glitch 5s infinite linear alternate-reverse; animation-delay: 2.5s; }
+@keyframes glitch { 0%, 95% { transform: translate(0); } 96% { transform: translate(-2px, 1px); } 98% { transform: translate(2px, -1px); } 100% { transform: translate(0); } }
+.typewriter-wrap { font-size: 17px; color: var(--muted); margin-bottom: 24px; height: 26px; }
+.type-cursor { color: var(--accent); animation: blink 0.5s infinite; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+.hero-bio { font-size: 15px; line-height: 1.85; color: var(--muted); max-width: 440px; margin-bottom: 32px; }
+.btn-wrap { display: flex; gap: 14px; }
+.btn { padding: 13px 30px; border-radius: 7px; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s; display: inline-block; }
+.btn-primary { background: var(--accent); color: #0d0d14; }
+.btn-primary:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,229,255,0.28); }
+.btn-secondary { background: transparent; border: 1px solid var(--border); color: var(--accent); font-weight: 500; }
+.btn-secondary:hover { background: var(--accent-dim); border-color: rgba(0,229,255,0.5); }
+
+/* Terminal Card */
+.term-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 18px 22px; width: 100%; max-width: 480px; margin: 0 auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.term-head { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
+.term-dot { width: 10px; height: 10px; border-radius: 50%; }
+.term-dot.r { background: #ff5f56; } .term-dot.y { background: #ffbd2e; } .term-dot.g { background: #27c93f; }
+.term-title { font-size: 11px; color: var(--muted); margin-left: 8px; }
+.term-divider { height: 1px; background: var(--border); margin-bottom: 12px; }
+.term-body { font-family: 'Courier New', monospace; font-size: 12px; color: var(--accent); line-height: 1.8; min-height: 120px; }
+
+/* Sections Common */
+.section-eyebrow { font-size: 8px; color: var(--accent); letter-spacing: 4px; text-align: center; margin-bottom: 16px; }
+.section-title { font-size: 38px; font-weight: 700; text-align: center; margin-bottom: 12px; }
+.section-sub { font-size: 16px; color: var(--muted); text-align: center; max-width: 480px; margin: 0 auto 64px; }
+
+/* Skills */
+.skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px 80px; max-width: 900px; margin: 0 auto; }
+.skill-item { margin-bottom: 10px; }
+.skill-info { display: flex; justify-content: space-between; font-size: 15px; font-weight: 500; margin-bottom: 8px; }
+.skill-pct { color: var(--accent); font-size: 14px; }
+.skill-track { width: 100%; height: 5px; background: rgba(255,255,255,0.07); border-radius: 3px; overflow: hidden; }
+.skill-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--purple)); width: 0; transition: width 1.1s ease-out; }
+
+/* Projects */
+.projects-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 1000px; margin: 0 auto; }
+.project-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 28px; transition: 0.25s ease; display: block; }
+.project-card:hover { transform: translateY(-5px); border-color: rgba(0,229,255,0.45); box-shadow: 0 16px 48px rgba(0,229,255,0.08); }
+.card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
+.project-card h3 { font-size: 20px; font-weight: 600; margin-bottom: 10px; }
+.project-card p { font-size: 14px; line-height: 1.75; color: var(--muted); }
+.card-bottom { margin-top: 22px; font-size: 13px; font-weight: 500; color: var(--accent); }
+.project-card:hover .card-bottom { text-decoration: underline; }
+
+/* Contact */
+#contact .btn-wrap { justify-content: center; margin-top: 32px; }
+#contact .btn-secondary { font-size: 14px; padding: 12px 26px; border-radius: 8px; color: var(--text); }
+#contact .btn-secondary:hover { color: var(--accent); }
+
+/* Footer */
+footer { border-top: 1px solid var(--border); padding: 36px 80px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: var(--muted); }
+.footer-links { display: flex; gap: 16px; }
+.footer-links a { color: var(--muted); font-weight: 600; transition: 0.2s; }
+.footer-links a:hover { color: var(--accent); }
+
+/* Boot Screen */
+#boot-screen { position: fixed; inset: 0; background: #000; z-index: 99999; display: flex; align-items: center; justify-content: center; transition: opacity 0.6s; flex-direction: column; }
+.boot-icon { color: var(--accent); font-size: 20px; margin-bottom: 20px; }
+#boot-text { font-size: 10px; color: var(--accent); height: 10px; margin-bottom: 20px; }
+.progress-wrap { width: 360px; height: 3px; background: #222; margin-bottom: 20px; }
+#boot-bar { width: 0%; height: 100%; background: var(--accent); transition: width 2.2s linear; }
+#boot-ready { font-size: 10px; color: var(--accent); opacity: 0; transition: 0.2s; }
+
+/* NPC */
+#npc-container { flex: 1; height: 100%; position: relative; margin: 0 40px; pointer-events: none; }
+#npc { position: absolute; top: 0; left: 50%; width: 48px; height: 64px; z-index: 10000; pointer-events: auto; }
+#npc-sprite { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform-origin: bottom center; transition: transform 0.1s linear; }
+#npc-body, #npc-head { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+#npc-head { transform-origin: 24px 36px; transition: transform 0.1s linear; }
+.npc-jump { animation: jump 0.5s ease-out; }
+.npc-bow { transition: transform 0.6s ease; }
+@keyframes jump { 0%, 100% { top: 0; } 40% { top: -40px; } }
+#dialog-box { position: absolute; top: 72px; left: 24px; transform: translateX(-50%); background: #0d0d1a; border: 3px solid var(--accent); border-radius: 4px; padding: 14px 18px; width: max-content; max-width: 260px; box-shadow: 4px 4px 0px rgba(0,229,255,0.2); display: flex; gap: 12px; opacity: 0; transition: 0.2s; pointer-events: none; }
+.dialog-active { opacity: 1 !important; transform: translateX(-50%) translateY(8px) !important; }
+#dialog-face { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--accent); flex-shrink: 0; background-size: cover; background-position: top center; }
+.dialog-text-wrap { position: relative; padding-bottom: 8px; }
+#dialog-text { font-size: 16px; line-height: 1.6; color: #f0f0f0; white-space: pre-wrap; font-family: 'PixelOperatorRegular', monospace; }
+.dialog-pointer { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); border-left: 8px solid transparent; border-right: 8px solid transparent; border-bottom: 8px solid var(--accent); border-top: none; }
+.dialog-blink { position: absolute; bottom: 0; right: -8px; font-size: 8px; color: var(--accent); animation: blink 0.5s infinite; }
+
+/* Mobile adjustments */
+@media(max-width: 768px) {
+  #hero { flex-direction: column; padding-top: 100px; text-align: center; }
+  .hero-bio { margin: 0 auto 32px; }
+  .btn-wrap { justify-content: center; }
+  .projects-grid, .skills-grid { grid-template-columns: 1fr; }
+  section { padding: 80px 40px; }
+  .nav-links, .nav-work { display: none; } /* Simplified for code size */
+}
+</style>
+</head>
+<body>
+
+<div id="boot-screen">
+  <div class="boot-icon pixel">✦</div>
+  <div id="boot-text" class="pixel"></div>
+  <div class="progress-wrap"><div id="boot-bar"></div></div>
+  <div id="boot-ready" class="pixel">[ READY ]</div>
+</div>
+
+<canvas id="bg-canvas"></canvas>
+<div id="scroll-progress"></div>
+<div id="cursor-dot"></div>
+<div id="cursor-ring"></div>
+
+<nav>
+  <div class="nav-logo pixel">✦ _mr_einstein__</div>
+  <div id="npc-container">
+    <div id="npc" class="hover-target">
+      <div id="npc-sprite">
+        <div id="npc-body"></div>
+        <div id="npc-head"></div>
+      </div>
+      <div id="dialog-box">
+        <div id="dialog-face"></div>
+        <div class="dialog-text-wrap">
+          <div id="dialog-text" class="pixel"></div>
+          <div class="dialog-blink">▼</div>
+        </div>
+        <div class="dialog-pointer"></div>
+      </div>
+    </div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#hero" class="hover-target">Home</a></li>
+    <li class="nav-work hover-target">
+      Work ▾
+      <div class="mega-dropdown">
+        <div class="mega-inner">
+          <div class="mega-col">
+            <h4 class="pixel">Featured</h4>
+            <a href="https://github.com/mr-einstein-x9/Youtube-Pipeline" class="feat-card">
+              <span class="pill pill-py">PYTHON</span><span class="pill pill-feat">★ FEATURED</span>
+              <h5>Youtube-Pipeline</h5>
+              <p>Auto-finds trending topics, writes scripts, and produces complete videos.</p>
+              <span>View on GitHub →</span>
+            </a>
+          </div>
+          <div class="mega-col">
+            <h4 class="pixel">All Projects</h4>
+            <ul class="proj-list">
+              <a href="https://github.com/mr-einstein-x9/Youtube-Pipeline" target="_blank"><li>🎬 <div><h6>Youtube-Pipeline</h6><p>Auto video creator</p></div><span class="arrow">→</span></li></a>
+              <a href="https://bharat-sim-defence.vercel.app" target="_blank"><li>🛡️ <div><h6>BharatSim-Defence</h6><p>Defence simulation engine</p></div><span class="arrow">→</span></li></a>
+              <a href="https://saarthi-ai-black.vercel.app" target="_blank"><li>🕉️ <div><h6>SaarthiAI</h6><p>Krishna-centric AI</p></div><span class="arrow">→</span></li></a>
+              <a href="https://viral-score-coral.vercel.app" target="_blank"><li>📈 <div><h6>ViralScore</h6><p>AI content analyzer</p></div><span class="arrow">→</span></li></a>
+              <a href="https://github.com/mr-einstein-x9/Simply-Calculator" target="_blank"><li>🧮 <div><h6>Simply Calculator</h6><p>Clean calculator</p></div><span class="arrow">→</span></li></a>
+            </ul>
+          </div>
+          <div class="mega-col">
+            <h4 class="pixel">Quick Links</h4>
+            <a href="https://github.com/mr-einstein-x9" class="quick-link">
+              <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+              <div><h6>GitHub</h6><p>13 repos · Pull Shark 🦈</p></div>
+            </a>
+            <a href="https://leetcode.com/u/_mr_einstein__/" class="quick-link">
+              <span style="font-size:20px">⚡</span>
+              <div><h6>LeetCode</h6><p>Active · Daily solver</p></div>
+            </a>
+            <a href="https://www.linkedin.com/in/nikhil-sharma-linked-in" class="quick-link" target="_blank">
+              <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+              <div><h6>LinkedIn</h6><p>Professional Network</p></div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </li>
+    <li><a href="#skills" class="hover-target">Skills</a></li>
+    <li><a href="#contact" class="hover-target">Contact</a></li>
+    <li><a href="https://github.com/mr-einstein-x9" class="btn-nav hover-target">GitHub ↗</a></li>
+  </ul>
+</nav>
+
+<section id="hero">
+  <div class="hero-left animate-up">
+    <div class="status-badge"><div class="status-dot"></div>AVAILABLE FOR HIRE</div>
+    <div class="hero-hello">Hello, I'm</div>
+    <h1 class="glitch" data-text="_mr_einstein__">_mr_einstein__</h1>
+    <div class="typewriter-wrap"><span id="tw-text"></span><span class="type-cursor">|</span></div>
+    <p class="hero-bio">I build things that matter — from defence simulations to fully automated video pipelines. Python-first, JS when it ships faster. Always focused on real impact.</p>
+    <div class="btn-wrap">
+      <a href="#projects" class="btn btn-primary hover-target">View My Work</a>
+      <a href="https://github.com/mr-einstein-x9" class="btn btn-secondary hover-target">GitHub ↗</a>
+    </div>
+  </div>
+  <div class="hero-right animate-up">
+    <div class="term-card">
+      <div class="term-head">
+        <div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div>
+        <span class="term-title">einstein_terminal</span>
+      </div>
+      <div class="term-divider"></div>
+      <div class="term-body" id="hero-term"></div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="section-eyebrow pixel animate-up">[ SKILLS ]</div>
+  <h2 class="section-title animate-up" style="transition-delay:0.1s">What I Work With</h2>
+  <p class="section-sub animate-up" style="transition-delay:0.2s">A breakdown of my tools and how confident I am with each.</p>
+  <div class="skills-grid animate-up" style="transition-delay:0.3s">
+    <div class="skill-item"><div class="skill-info"><span>Python</span><span class="skill-pct" data-val="85">0%</span></div><div class="skill-track"><div class="skill-fill" data-w="85%"></div></div></div>
+    <div class="skill-item"><div class="skill-info"><span>Problem Solving</span><span class="skill-pct" data-val="80">0%</span></div><div class="skill-track"><div class="skill-fill" data-w="80%"></div></div></div>
+    <div class="skill-item"><div class="skill-info"><span>Automation</span><span class="skill-pct" data-val="75">0%</span></div><div class="skill-track"><div class="skill-fill" data-w="75%"></div></div></div>
+    <div class="skill-item"><div class="skill-info"><span>Data Pipelines</span><span class="skill-pct" data-val="70">0%</span></div><div class="skill-track"><div class="skill-fill" data-w="70%"></div></div></div>
+    <div class="skill-item"><div class="skill-info"><span>JavaScript</span><span class="skill-pct" data-val="65">0%</span></div><div class="skill-track"><div class="skill-fill" data-w="65%"></div></div></div>
+    <div class="skill-item"><div class="skill-info"><span>System Design</span><span class="skill-pct" data-val="60">0%</span></div><div class="skill-track"><div class="skill-fill" data-w="60%"></div></div></div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="section-eyebrow pixel animate-up">[ PROJECTS ]</div>
+  <h2 class="section-title animate-up" style="transition-delay:0.1s">Things I've Built</h2>
+  <p class="section-sub animate-up" style="transition-delay:0.2s">From simulations to full automation pipelines.</p>
+  <div class="projects-grid">
+    <a href="https://github.com/mr-einstein-x9/Youtube-Pipeline" class="project-card hover-target animate-up">
+      <div class="card-top"><span class="pill pill-py">PYTHON</span><span class="pill pill-feat">★ FEATURED</span></div>
+      <h3>Youtube-Pipeline</h3><p>Automatically finds trending topics, writes scripts, and produces complete videos — zero manual input.</p>
+      <div class="card-bottom">View Code →</div>
+    </a>
+    <a href="https://bharat-sim-defence.vercel.app" target="_blank" rel="noopener noreferrer" class="project-card hover-target animate-up" style="transition-delay:0.1s">
+      <div class="card-top"><span class="pill pill-js">JAVASCRIPT</span></div>
+      <h3>BharatSim-Defence</h3><p>A simulation engine for modelling defence scenarios and complex operational decision trees.</p>
+      <div class="card-bottom">Live Demo →</div>
+    </a>
+    <a href="https://saarthi-ai-black.vercel.app" target="_blank" rel="noopener noreferrer" class="project-card hover-target animate-up" style="transition-delay:0.2s">
+      <div class="card-top"><span class="pill" style="background:rgba(0,229,255,0.15);color:var(--accent);">AI / FULLSTACK</span></div>
+      <h3>SaarthiAI</h3><p>A highly personalized, Krishna-centric guidance engine utilizing a hybrid RAG system.</p>
+      <div class="card-bottom">Live Demo →</div>
+    </a>
+    <a href="https://viral-score-coral.vercel.app" target="_blank" rel="noopener noreferrer" class="project-card hover-target animate-up" style="transition-delay:0.3s">
+      <div class="card-top"><span class="pill" style="background:rgba(168,85,247,0.15);color:#c084fc;">Llama 3.3 / AI</span></div>
+      <h3>ViralScore</h3><p>An AI content analyzer providing deep, niche-specific feedback and trending audio insights.</p>
+      <div class="card-bottom">Live Demo →</div>
+    </a>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="section-eyebrow pixel animate-up">[ CONTACT ]</div>
+  <h2 class="section-title animate-up" style="transition-delay:0.1s">Let's Work Together</h2>
+  <p class="section-sub animate-up" style="transition-delay:0.2s">Open to collaborations, freelance projects, and interesting problems worth solving.</p>
+  <div class="term-card animate-up" style="transition-delay:0.3s">
+    <div class="term-head"><div class="term-dot r"></div><div class="term-dot y"></div><div class="term-dot g"></div><span class="term-title">contact_module</span></div>
+    <div class="term-divider"></div>
+    <div class="term-body" id="contact-term"></div>
+  </div>
+  <div class="btn-wrap animate-up" style="transition-delay:0.4s">
+    <a href="https://github.com/mr-einstein-x9" target="_blank" class="btn btn-secondary hover-target">GitHub ↗</a>
+    <a href="https://leetcode.com/u/_mr_einstein__/" target="_blank" class="btn btn-secondary hover-target">LeetCode ↗</a>
+    <a href="https://www.linkedin.com/in/nikhil-sharma-linked-in" target="_blank" class="btn btn-secondary hover-target">LinkedIn ↗</a>
+    <a href="mailto:youremail@gmail.com" class="btn btn-secondary hover-target">Email ↗</a>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 _mr_einstein__ · Made with ☕ and too many bugs</p>
+  <div class="footer-links">
+    <a href="https://github.com/mr-einstein-x9" target="_blank" class="hover-target">GitHub</a>
+    <a href="https://leetcode.com/u/_mr_einstein__/" target="_blank" class="hover-target">LeetCode</a>
+    <a href="https://www.linkedin.com/in/nikhil-sharma-linked-in" target="_blank" class="hover-target">LinkedIn</a>
+  </div>
+</footer>
+
+
+
+<script>
+// --- CORE UTILS ---
+const $ = q => document.querySelector(q);
+const $$ = q => document.querySelectorAll(q);
+
+// --- CURSOR ---
+const dot = $('#cursor-dot'), ring = $('#cursor-ring');
+let mx=window.innerWidth/2, my=window.innerHeight/2, rx=mx, ry=my;
+window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; dot.style.left=mx+'px'; dot.style.top=my+'px'; });
+function loopCursor() {
+  rx += (mx - rx) * 0.1; ry += (my - ry) * 0.1;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(loopCursor);
+}
+loopCursor();
+$$('.hover-target').forEach(el => {
+  el.addEventListener('mouseenter', ()=>ring.classList.add('hover'));
+  el.addEventListener('mouseleave', ()=>ring.classList.remove('hover'));
+});
+
+// --- SCROLL ---
+window.addEventListener('scroll', () => {
+  let scrollPct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+  $('#scroll-progress').style.width = `${scrollPct * 100}%`;
+});
+
+// --- AUDIO ---
+let audioCtx;
+window.addEventListener('click', () => { if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }, {once:true});
+function playBeep() {
+  if(!audioCtx) return;
+  let o = audioCtx.createOscillator(), g = audioCtx.createGain();
+  o.type = 'square'; o.frequency.value = 210; g.gain.value = 0.035;
+  o.connect(g); g.connect(audioCtx.destination);
+  o.start(); setTimeout(()=>o.stop(), 70);
+}
+$$('#contact .btn').forEach(btn => btn.addEventListener('mouseenter', playBeep));
+
+// --- BG CANVAS ---
+const cvs = $('#bg-canvas'), ctx = cvs.getContext('2d');
+let pts = [];
+function rsz() { cvs.width = window.innerWidth; cvs.height = window.innerHeight; }
+window.addEventListener('resize', rsz); rsz();
+for(let i=0;i<60;i++) pts.push({ x:Math.random()*cvs.width, y:Math.random()*cvs.height, t:Math.random()>.5?'d':(Math.random()>.5?'p':'s'), s:0.2+Math.random()*0.3, o:Math.random()*Math.PI*2, c:Math.random()>.3?'rgba(0,229,255,'+(0.15+Math.random()*0.2)+')':'rgba(168,85,247,0.12)' });
+function drw() {
+  ctx.clearRect(0,0,cvs.width,cvs.height);
+  pts.forEach(p => {
+    p.y -= p.s; p.x += Math.sin(p.o)*0.5; p.o += 0.01;
+    if(p.y < 0) p.y = cvs.height;
+    ctx.fillStyle = ctx.strokeStyle = p.c;
+    if(p.t==='d') ctx.fillRect(p.x,p.y,2,2);
+    else if(p.t==='p') { ctx.beginPath(); ctx.moveTo(p.x-3,p.y); ctx.lineTo(p.x+3,p.y); ctx.moveTo(p.x,p.y-3); ctx.lineTo(p.x,p.y+3); ctx.stroke(); }
+    else { ctx.beginPath(); ctx.arc(p.x,p.y,2,0,Math.PI*2); ctx.fill(); }
+  });
+  requestAnimationFrame(drw);
+}
+drw();
+
+// --- BOOT SCREEN ---
+const bText = $('#boot-text'), bStr = "BOOTING _MR_EINSTEIN__ OS v1.0..."; let bi=0;
+function typeB() {
+  if(bi < bStr.length) { bText.innerHTML += bStr.charAt(bi); bi++; setTimeout(typeB, 35); }
+  else {
+    $('#boot-bar').style.width = '100%';
+    setTimeout(() => {
+      $('#boot-ready').style.opacity = 1;
+      setTimeout(() => { $('#boot-screen').style.opacity = 0; setTimeout(()=>$('#boot-screen').style.display='none',600); initHero(); }, 500);
+    }, 2200);
+  }
+}
+typeB();
+
+// --- TYPEWRITER & TERMINAL ---
+const tw = $('#tw-text'), phrases = ["Python Developer", "Problem Solver", "Creative Builder", "Automation Engineer"];
+let pi=0, ci=0, del=false;
+function typeH() {
+  let cur = phrases[pi];
+  if(del) { tw.innerHTML = cur.substring(0, ci-1); ci--; }
+  else { tw.innerHTML = cur.substring(0, ci+1); ci++; }
+  let spd = del ? 40 : 80;
+  if(!del && ci === cur.length) { spd = 1800; del = true; }
+  else if(del && ci === 0) { del = false; pi = (pi+1)%phrases.length; spd = 500; }
+  setTimeout(typeH, spd);
+}
+
+function typeTerm(el, lines, cb) {
+  let i=0;
+  function nx() {
+    if(i<lines.length) { el.innerHTML += '> ' + lines[i] + '<br>'; i++; setTimeout(nx, 350); }
+    else if(cb) cb();
+  }
+  nx();
+}
+
+function initHero() {
+  typeH();
+  typeTerm($('#hero-term'), ["_mr_einstein__", "github  : mr-einstein-x9 [13 repos]", "leetcode: _mr_einstein__ [active]", "stack   : python, javascript", "status  : building...<span style='animation:blink 0.5s infinite'>▌</span>"], () => {
+    initNPCIntro();
+  });
+}
+
+// --- ANIMATIONS & OBSERVERS ---
+const obs = new IntersectionObserver(e => {
+  e.forEach(x => {
+    if(x.isIntersecting) {
+      x.target.classList.add('in-view');
+      if(x.target.id === 'contact' && !x.target.dataset.init) {
+        x.target.dataset.init = "1";
+        typeTerm($('#contact-term'), ["Initializing contact module...", "github  : github.com/mr-einstein-x9", "leetcode : leetcode.com/u/_mr_einstein__/", "status  : ready to collaborate <span style='color:var(--green);animation:pulse 2s infinite'>●</span>"]);
+      }
+      if(x.target.classList.contains('skills-grid') && !x.target.dataset.init) {
+        x.target.dataset.init = "1";
+        $$('.skill-fill').forEach(bar => bar.style.width = bar.parentElement.previousElementSibling.lastElementChild.dataset.val + '%');
+        let c=0; let iv = setInterval(()=>{ c++; $$('.skill-pct').forEach(p=>p.innerText=Math.min(c,parseInt(p.dataset.val))+'%'); if(c>=100) clearInterval(iv); }, 11);
+      }
+    }
+  });
+}, {threshold:0.12});
+$$('.animate-up, #contact, .skills-grid').forEach(el => obs.observe(el));
+
+// --- NPC IMAGE ENGINE ---
+const imgs = {
+  IDLE: 'walk2.png',
+  TALK: 'walk2.png',
+  WALK_R: 'sit.png',
+  WALK_L: 'react.png',
+  WAVE1: 'wave1.png',
+  WAVE2: 'wave2.png',
+  WAVE3: 'wave3.png',
+  INFINITY: 'infinity_processed.png'
+};
+const waveSeq = [imgs.WAVE1, imgs.WAVE2, imgs.WAVE3, imgs.WAVE2, imgs.WAVE3, imgs.WAVE1];
+
+const npc = $('#npc'), dbox = $('#dialog-box'), dtxt = $('#dialog-text');
+$('#dialog-face').style.backgroundImage = `url(walk2.png)`;
+
+let nSt='IDLE', nEm='I', nX=300, dir=1, stTmr=0, dTo, cLeft=200;
+let greetFrame = 0;
+let isLocked = true;
+
+function initNPCIntro() {
+  nSt = 'WAVE';
+  dbox.classList.add('dialog-active');
+  dtxt.innerText = '';
+  let txt1 = "Hello, I am Gojo!";
+  let i1 = 0;
+  function ty1() {
+    if(i1 < txt1.length) { dtxt.innerText += txt1[i1]; i1++; setTimeout(ty1, 40); }
+  }
+  ty1();
+
+  let waveTimer = setInterval(() => {
+    greetFrame++;
+  }, 400);
+
+  setTimeout(() => {
+    clearInterval(waveTimer);
+    nSt = 'INFINITY';
+    
+    dtxt.innerText = '';
+    let txt2 = "Welcome to my domain.";
+    let i2 = 0;
+    function ty2() {
+      if(i2 < txt2.length) { dtxt.innerText += txt2[i2]; i2++; setTimeout(ty2, 40); }
+    }
+    ty2();
+    
+    setTimeout(() => {
+      dbox.classList.remove('dialog-active');
+      nSt = 'WALK';
+      npc.className = 'hover-target';
+      isLocked = false;
+      stTmr = 0;
+    }, 2000);
+    
+  }, 2000);
+}
+setTimeout(() => { 
+  if($('#npc-container')) {
+    nX = $('#npc-container').offsetWidth / 2; 
+    cLeft = $('#npc-container').getBoundingClientRect().left;
+  }
+}, 100);
+window.addEventListener('resize', () => { if($('#npc-container')) cLeft = $('#npc-container').getBoundingClientRect().left; });
+
+function rNPC() {
+  let sprite = $('#npc-sprite');
+  
+  if (nSt === 'WAVE') {
+    let img = waveSeq[greetFrame % waveSeq.length];
+    sprite.style.backgroundImage = `url('${img}')`;
+    sprite.style.backgroundSize = 'contain';
+    sprite.style.backgroundPosition = 'center bottom';
+    sprite.style.transform = `none`;
+  } else if (nSt === 'INFINITY') {
+    sprite.style.backgroundImage = `url('${imgs.INFINITY}')`;
+    sprite.style.backgroundSize = 'contain';
+    sprite.style.backgroundPosition = 'center bottom';
+    sprite.style.transform = `none`;
+  } else if(nSt==='WALK') {
+    let walkFrame = Math.floor(Date.now() / 250) % 4;
+    let xPos = walkFrame * 33.333; // 4 frames: 0%, 33.3%, 66.6%, 100%
+    
+    if(dir === 1) {
+      sprite.style.backgroundImage = `url('${imgs.WALK_L}')`; // Use the smooth left-walk sprite
+      sprite.style.transform = `scaleX(-1)`; // Flip it to face right
+    } else {
+      sprite.style.backgroundImage = `url('${imgs.WALK_L}')`;
+      sprite.style.transform = `none`;
+    }
+    sprite.style.backgroundSize = '400% 100%';
+    sprite.style.backgroundPosition = `${xPos}% bottom`;
+  } else {
+    // IDLE, REACT, SIT, TALK
+    sprite.style.backgroundImage = `url('${imgs.IDLE}')`;
+    sprite.style.backgroundSize = 'contain';
+    sprite.style.backgroundPosition = 'center bottom';
+    sprite.style.transform = `none`;
+  }
+  
+  npc.style.left = nX + 'px';
+}
+
+function npcLoop() {
+  requestAnimationFrame(npcLoop);
+  if(nSt==='WALK') {
+    nX += dir * 0.4;
+    let maxW = $('#npc-container').offsetWidth || 600;
+    if(nX < 10) dir=1; if(nX > maxW-58) dir=-1;
+  }
+  rNPC();
+}
+npcLoop();
+
+setInterval(()=>{
+  if(nSt==='REACT' || nSt==='TALK' || isLocked) return;
+  stTmr++;
+  if(stTmr===12 && nSt==='WALK') { nSt='IDLE'; npc.className='hover-target'; }
+  else if(stTmr===15 && nSt==='IDLE') { nSt='WALK'; npc.className='hover-target'; stTmr=0; }
+  else if(stTmr===28 && nSt==='WALK') { nSt='SIT'; npc.className='hover-target'; }
+  else if(stTmr===32 && nSt==='SIT') { nSt='WALK'; npc.className='hover-target'; stTmr=0; }
+}, 1000);
+
+let dTyping=false;
+let dTypeTimer;
+function triggerDialog(txt, force=false, keepState=false) {
+  if (isLocked && !force) return;
+  clearTimeout(dTo);
+  clearTimeout(dTypeTimer);
+  dbox.classList.add('dialog-active');
+  dtxt.innerText=''; dTyping=true;
+  let oSt = nSt; 
+  if (!keepState) nSt='TALK';
+  let i=0;
+  function ty() {
+    if(i<txt.length) { dtxt.innerText+=txt[i]; i++; dTypeTimer=setTimeout(ty, 40); }
+    else { dTyping=false; if (!keepState) nSt=oSt; dTo=setTimeout(()=>dbox.classList.remove('dialog-active'), 3500); }
+  }
+  ty();
+}
+
+let clickCount = 0;
+let clickThreshold = Math.floor(Math.random() * 4) + 7; // 7 to 10 clicks
+let inCooldown = false;
+
+npc.addEventListener('click', () => {
+  if (inCooldown) {
+    const cdReplies = ["Ora ora ora!", "Muda muda muda!", "Too slow!", "I can't even feel that.", "Infinity is active.", "Try harder.", "Yawn...", "Is that your full speed?"];
+    triggerDialog(cdReplies[Math.floor(Math.random() * cdReplies.length)], true, true);
+    return;
+  }
+
+  if (isLocked) return;
+  
+  clickCount++;
+  if (clickCount >= clickThreshold) {
+    isLocked = true;
+    inCooldown = true;
+    nSt = 'INFINITY';
+    npc.className = 'npc-jump hover-target';
+    
+    clearTimeout(dTo);
+    clearTimeout(dTypeTimer);
+    dbox.classList.add('dialog-active');
+    dtxt.innerText=''; dTyping=true;
+    
+    let txt = "Now keep trying.";
+    let i=0;
+    function ty() {
+      if(i<txt.length) { dtxt.innerText+=txt[i]; i++; dTypeTimer=setTimeout(ty, 40); }
+      else { 
+        dTyping=false; 
+        dTo = setTimeout(()=> {
+          dbox.classList.remove('dialog-active');
+          nSt = 'WALK';
+          npc.className = 'hover-target';
+        }, 3500); 
+        
+        setTimeout(() => {
+          isLocked = false;
+          inCooldown = false;
+          clickCount = 0;
+          clickThreshold = Math.floor(Math.random() * 4) + 7;
+        }, 30000);
+      }
+    }
+    ty();
+    return;
+  }
+
+  nSt='REACT'; nEm= ['H','T','E','I'][Math.floor(Math.random()*4)];
+  npc.className='npc-jump hover-target';
+  
+  const replies = [
+    "Hey now! Watch the hair!",
+    "You know I have Infinity on, right?",
+    "Keep clicking.\nI dare you.",
+    "Alright, alright,\nno need to rush.",
+    "Are you challenging me?",
+    "Did you really think\nthat would work?",
+    "My code is flawless,\njust like me.",
+    "Domain Expansion:\nPerfect Syntax.",
+    "You're lucky I'm in\na good mood.",
+    "Is that all you've got?",
+    "I'm the strongest\ndeveloper here.",
+    "Nice try. Better luck\nnext time.",
+    "Keep clicking, it's cute.",
+    "I'd explain my architecture,\nbut it's beyond you."
+  ];
+  
+  triggerDialog(replies[Math.floor(Math.random() * replies.length)]);
+  setTimeout(()=>{ nSt='WALK'; npc.className='hover-target'; nEm='I'; }, 600);
+});
+
+const sObs = new IntersectionObserver(e => {
+  e.forEach(x => {
+    if(x.isIntersecting && x.intersectionRatio > 0.5) {
+      if (isLocked) return;
+      let id = x.target.id;
+      if(id==='hero') { nSt='REACT'; nEm='H'; triggerDialog("This is my domain.\nI build things that\nactually matter."); npc.className='npc-bow hover-target'; }
+      else if(id==='skills') { nSt='REACT'; nEm='T'; triggerDialog("My skill tree?\nYeah, I'm basically\nthe strongest."); npc.className='hover-target'; }
+      else if(id==='projects') { nSt='REACT'; nEm='P'; triggerDialog("Check out my creations.\nThey're flawlessly\nexecuted."); npc.className='hover-target'; }
+      else if(id==='contact') { nSt='REACT'; nEm='H'; triggerDialog("Want to team up?\nSend a signal.\nI might just answer."); npc.className='hover-target'; }
+      setTimeout(()=>{ if(nSt==='REACT') { nSt='WALK'; npc.className='hover-target'; nEm='I'; } }, 2500);
+    }
+  });
+}, {threshold:0.51});
+$$('section').forEach(el => sObs.observe(el));
+
+</script>
+</body>
+</html>
