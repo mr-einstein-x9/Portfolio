@@ -162,6 +162,168 @@ footer { border-top: 1px solid var(--border); padding: 36px 80px; display: flex;
 .dialog-pointer { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); border-left: 8px solid transparent; border-right: 8px solid transparent; border-bottom: 8px solid var(--accent); border-top: none; }
 .dialog-blink { position: absolute; bottom: 0; right: -8px; font-size: 8px; color: var(--accent); animation: blink 0.5s infinite; }
 
+/* Current Project */
+.cwp-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 36px 40px;
+  max-width: 720px;
+  margin: 0 auto;
+  overflow: hidden;
+  transition: 0.3s ease;
+  box-shadow: 0 0 40px rgba(0,229,255,0.04);
+}
+.cwp-card:hover {
+  border-color: rgba(0,229,255,0.4);
+  box-shadow: 0 0 60px rgba(0,229,255,0.08), 0 20px 60px rgba(0,0,0,0.3);
+  transform: translateY(-3px);
+}
+.cwp-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 15px;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--accent), var(--purple), transparent, var(--accent));
+  background-size: 300% 300%;
+  animation: borderGlow 4s ease infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+@keyframes borderGlow {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.cwp-scanline {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,229,255,0.015) 2px, rgba(0,229,255,0.015) 4px);
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 14px;
+}
+.cwp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 2;
+}
+.cwp-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--green);
+  letter-spacing: 1.5px;
+}
+.cwp-date {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+}
+.cwp-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(90deg, var(--text) 0%, var(--accent) 50%, var(--text) 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.cwp-pitch {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-bottom: 28px;
+  position: relative;
+  z-index: 2;
+  max-width: 560px;
+}
+.cwp-progress {
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 2;
+}
+.cwp-progress-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: var(--muted);
+}
+.cwp-pct {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+}
+.cwp-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+}
+.cwp-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--purple));
+  width: 0;
+  border-radius: 3px;
+  transition: width 1.2s ease-out;
+  position: relative;
+}
+.cwp-fill::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: -2px;
+  width: 10px;
+  height: 10px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 12px var(--accent), 0 0 24px rgba(0,229,255,0.3);
+}
+.cwp-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 2;
+}
+.cwp-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent);
+  position: relative;
+  z-index: 2;
+  transition: 0.2s;
+}
+.cwp-link:hover {
+  text-decoration: underline;
+  filter: brightness(1.2);
+}
+
 /* Mobile adjustments */
 @media(max-width: 768px) {
   #hero { flex-direction: column; padding-top: 100px; text-align: center; }
@@ -169,7 +331,10 @@ footer { border-top: 1px solid var(--border); padding: 36px 80px; display: flex;
   .btn-wrap { justify-content: center; }
   .projects-grid, .skills-grid { grid-template-columns: 1fr; }
   section { padding: 80px 40px; }
-  .nav-links, .nav-work { display: none; } /* Simplified for code size */
+  .nav-links, .nav-work { display: none; }
+  .cwp-card { padding: 24px 20px; }
+  .cwp-title { font-size: 22px; }
+  .cwp-header { flex-direction: column; align-items: flex-start; gap: 8px; }
 }
 </style>
 </head>
@@ -247,6 +412,7 @@ footer { border-top: 1px solid var(--border); padding: 36px 80px; display: flex;
         </div>
       </div>
     </li>
+    <li><a href="#current-project" class="hover-target">Current</a></li>
     <li><a href="#skills" class="hover-target">Skills</a></li>
     <li><a href="#contact" class="hover-target">Contact</a></li>
     <li><a href="https://github.com/mr-einstein-x9" class="btn-nav hover-target">GitHub ↗</a></li>
@@ -274,6 +440,39 @@ footer { border-top: 1px solid var(--border); padding: 36px 80px; display: flex;
       <div class="term-divider"></div>
       <div class="term-body" id="hero-term"></div>
     </div>
+  </div>
+</section>
+
+<section id="current-project">
+  <div class="section-eyebrow pixel animate-up">[ CURRENTLY BUILDING ]</div>
+  <h2 class="section-title animate-up" style="transition-delay:0.1s">Currently Working On</h2>
+  <p class="section-sub animate-up" style="transition-delay:0.2s">What I'm pouring my energy into right now.</p>
+  <div class="cwp-card animate-up" style="transition-delay:0.3s">
+    <div class="cwp-scanline"></div>
+    <div class="cwp-header">
+      <div class="cwp-status">
+        <div class="status-dot"></div>
+        IN PROGRESS
+      </div>
+      <span class="cwp-date">Started Jun 2026</span>
+    </div>
+    <h3 class="cwp-title">Sanjaya</h3>
+    <p class="cwp-pitch">Sanjaya sees the entire battlefield of technology — so you don't have to. A multiagent system that's engaging like social media and informative like a news article, delivering concise tech intel with full source links.</p>
+    <div class="cwp-progress">
+      <div class="cwp-progress-info">
+        <span>Progress</span>
+        <span class="cwp-pct" data-val="25">0%</span>
+      </div>
+      <div class="cwp-track"><div class="cwp-fill" data-w="25%"></div></div>
+    </div>
+    <div class="cwp-tags">
+      <span class="pill pill-py">PYTHON</span>
+      <span class="pill" style="background:rgba(0,229,255,0.15);color:var(--accent);">NEXT.JS 14</span>
+      <span class="pill" style="background:rgba(251,191,36,0.15);color:#fbbf24;">FASTAPI</span>
+      <span class="pill" style="background:rgba(168,85,247,0.15);color:#c084fc;">LANGGRAPH</span>
+      <span class="pill" style="background:rgba(0,255,136,0.12);color:var(--green);">GEMINI</span>
+    </div>
+    <a href="https://github.com/mr-einstein-x9/Sanjaya" target="_blank" rel="noopener noreferrer" class="cwp-link hover-target">Follow Progress →</a>
   </div>
 </section>
 
@@ -462,10 +661,21 @@ const obs = new IntersectionObserver(e => {
         $$('.skill-fill').forEach(bar => bar.style.width = bar.parentElement.previousElementSibling.lastElementChild.dataset.val + '%');
         let c=0; let iv = setInterval(()=>{ c++; $$('.skill-pct').forEach(p=>p.innerText=Math.min(c,parseInt(p.dataset.val))+'%'); if(c>=100) clearInterval(iv); }, 11);
       }
+      if(x.target.classList.contains('cwp-card') && !x.target.dataset.init) {
+        x.target.dataset.init = "1";
+        let cwpFill = x.target.querySelector('.cwp-fill');
+        if(cwpFill) cwpFill.style.width = cwpFill.dataset.w;
+        let cwpPct = x.target.querySelector('.cwp-pct');
+        if(cwpPct) {
+          let tgt = parseInt(cwpPct.dataset.val);
+          let c2 = 0;
+          let iv2 = setInterval(() => { c2++; cwpPct.innerText = Math.min(c2, tgt) + '%'; if(c2 >= tgt) clearInterval(iv2); }, 25);
+        }
+      }
     }
   });
 }, {threshold:0.12});
-$$('.animate-up, #contact, .skills-grid').forEach(el => obs.observe(el));
+$$('.animate-up, #contact, .skills-grid, .cwp-card').forEach(el => obs.observe(el));
 
 // --- NPC IMAGE ENGINE ---
 const imgs = {
@@ -687,6 +897,7 @@ const sObs = new IntersectionObserver(e => {
       if (isLocked) return;
       let id = x.target.id;
       if(id==='hero') { nSt='REACT'; nEm='H'; triggerDialog("This is my domain.\nI build things that\nactually matter."); npc.className='npc-bow hover-target'; }
+      else if(id==='current-project') { nSt='REACT'; nEm='T'; triggerDialog("I'm cooking something\nnew right now.\nStay tuned."); npc.className='hover-target'; }
       else if(id==='skills') { nSt='REACT'; nEm='T'; triggerDialog("My skill tree?\nYeah, I'm basically\nthe strongest."); npc.className='hover-target'; }
       else if(id==='projects') { nSt='REACT'; nEm='P'; triggerDialog("Check out my creations.\nThey're flawlessly\nexecuted."); npc.className='hover-target'; }
       else if(id==='contact') { nSt='REACT'; nEm='H'; triggerDialog("Want to team up?\nSend a signal.\nI might just answer."); npc.className='hover-target'; }
