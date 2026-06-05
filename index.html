@@ -679,19 +679,19 @@ $$('.animate-up, #contact, .skills-grid, .cwp-card').forEach(el => obs.observe(e
 
 // --- NPC IMAGE ENGINE ---
 const imgs = {
-  IDLE: 'walk2.png',
-  TALK: 'walk2.png',
-  WALK_R: 'sit.png',
-  WALK_L: 'react.png',
-  WAVE1: 'wave1.png',
-  WAVE2: 'wave2.png',
-  WAVE3: 'wave3.png',
-  INFINITY: 'infinity_processed.png'
+  IDLE: 'assets/sprites/walk2.png',
+  TALK: 'assets/sprites/walk2.png',
+  WALK_R: 'assets/sprites/sit.png',
+  WALK_L: 'assets/sprites/react.png',
+  WAVE1: 'assets/sprites/wave1.png',
+  WAVE2: 'assets/sprites/wave2.png',
+  WAVE3: 'assets/sprites/wave3.png',
+  INFINITY: 'assets/sprites/infinity_processed.png'
 };
 const waveSeq = [imgs.WAVE1, imgs.WAVE2, imgs.WAVE3, imgs.WAVE2, imgs.WAVE3, imgs.WAVE1];
 
 const npc = $('#npc'), dbox = $('#dialog-box'), dtxt = $('#dialog-text');
-$('#dialog-face').style.backgroundImage = `url(walk2.png)`;
+$('#dialog-face').style.backgroundImage = `url(assets/sprites/walk2.png)`;
 
 let nSt='IDLE', nEm='I', nX=300, dir=1, stTmr=0, dTo, cLeft=200;
 let greetFrame = 0;
