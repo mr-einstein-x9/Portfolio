@@ -1086,6 +1086,90 @@
       box-shadow: 0 0 12px var(--accent), 0 0 24px rgba(0, 229, 255, 0.3);
     }
 
+    .cwp-phases {
+      margin-bottom: 28px;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      background: rgba(0, 229, 255, 0.02);
+      border: 1px solid rgba(0, 229, 255, 0.08);
+      border-radius: 8px;
+      padding: 20px;
+    }
+
+    .cwp-phase-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .cwp-phase-icon {
+      font-size: 14px;
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-weight: bold;
+    }
+
+    .cwp-phase-icon-spin {
+      font-size: 14px;
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-weight: bold;
+    }
+
+    .cwp-phase-item.completed .cwp-phase-icon {
+      background: rgba(0, 255, 136, 0.1);
+      color: var(--green);
+      border: 1px solid rgba(0, 255, 136, 0.25);
+    }
+
+    .cwp-phase-item.current .cwp-phase-icon-spin {
+      background: rgba(0, 229, 255, 0.12);
+      color: var(--accent);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      animation: pulse 1.5s infinite;
+    }
+
+    .cwp-phase-item.planned .cwp-phase-icon {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--muted);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .cwp-phase-content strong {
+      display: block;
+      font-size: 14px;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+
+    .cwp-phase-item.completed .cwp-phase-content strong {
+      color: var(--green);
+    }
+
+    .cwp-phase-item.current .cwp-phase-content strong {
+      color: var(--accent);
+    }
+
+    .cwp-phase-content p {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin: 0;
+    }
+
     .cwp-tags {
       display: flex;
       gap: 8px;
@@ -1327,10 +1411,40 @@
       <div class="cwp-progress">
         <div class="cwp-progress-info">
           <span>Progress</span>
-          <span class="cwp-pct" data-val="25">0%</span>
+          <span class="cwp-pct" data-val="10">0%</span>
         </div>
         <div class="cwp-track">
-          <div class="cwp-fill" data-w="25%"></div>
+          <div class="cwp-fill" data-w="10%"></div>
+        </div>
+      </div>
+      <div class="cwp-phases">
+        <div class="cwp-phase-item completed">
+          <span class="cwp-phase-icon">✔</span>
+          <div class="cwp-phase-content">
+            <strong>Phase 1: Architecture & Brainstorming</strong>
+            <p>System design, stack choices, and multiagent planning documented in logs.</p>
+          </div>
+        </div>
+        <div class="cwp-phase-item current">
+          <span class="cwp-phase-icon-spin">⚡</span>
+          <div class="cwp-phase-content">
+            <strong>Phase 2: Python Backend Foundations</strong>
+            <p>Crawler, Filter, Writer, and Publisher agents built with FastAPI & Gemini. (Active development)</p>
+          </div>
+        </div>
+        <div class="cwp-phase-item planned">
+          <span class="cwp-phase-icon">🔒</span>
+          <div class="cwp-phase-content">
+            <strong>Phase 3: Supabase DB & Auth Integration</strong>
+            <p>Database schemas, Google OAuth, and secure storage for news posts.</p>
+          </div>
+        </div>
+        <div class="cwp-phase-item planned">
+          <span class="cwp-phase-icon">🔒</span>
+          <div class="cwp-phase-content">
+            <strong>Phase 4: Next.js Frontend</strong>
+            <p>Instagram-style vertical feed, dark mode UI, and user engagement loops.</p>
+          </div>
         </div>
       </div>
       <div class="cwp-tags">
